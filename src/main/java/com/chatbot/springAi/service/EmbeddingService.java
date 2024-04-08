@@ -1,0 +1,56 @@
+package com.chatbot.springAi.service;
+
+import com.chatbot.springAi.repository.PGVectorRepository;
+import org.springframework.ai.document.Document;
+import org.springframework.ai.embedding.EmbeddingClient;
+import org.springframework.ai.vectorstore.PgVectorStore;
+import org.springframework.ai.vectorstore.VectorStore;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.stereotype.Repository;
+import org.springframework.stereotype.Service;
+
+import java.io.IOException;
+import java.net.URL;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.ArrayList;
+import java.util.List;
+
+@Service
+public class EmbeddingService {
+
+    @Autowired
+    private PGVectorRepository pgVectorRepository;
+
+    public void load() throws IOException {
+        String content = new String(Files.readAllBytes(toPath("regulamento.txt")));
+        List<Document> documentList = setDocumentList(content);
+        pgVectorRepository.add(documentList);
+    }
+
+    private List<Document> setDocumentList(String content) {
+        //separa o trecho por capitulos
+        String[] parts = content.split("_CAPITULO_");
+
+        List<Document> documentList = new ArrayList<>();
+        for (String part : parts) {
+            Document document = new Document(part);
+            documentList.add(document);
+        }
+
+        return documentList;
+    }
+
+    private static Path toPath(String fileName) {
+        try {
+            URL fileUrl = EmbeddingService.class.getClassLoader().getResource(fileName);
+            return Paths.get(fileUrl.toURI());
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+
+}
