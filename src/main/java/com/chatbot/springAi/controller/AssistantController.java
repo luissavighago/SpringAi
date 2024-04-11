@@ -3,6 +3,7 @@ package com.chatbot.springAi.controller;
 import com.chatbot.springAi.service.ChatService;
 import com.chatbot.springAi.service.EmbeddingService;
 import org.springframework.ai.chat.ChatResponse;
+import org.springframework.ai.chat.Generation;
 import org.springframework.ai.chat.prompt.Prompt;
 import org.springframework.ai.openai.OpenAiChatClient;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,7 +21,7 @@ public class AssistantController {
     private ChatService chatService;
 
     @GetMapping("/chat")
-    public ChatResponse sendMessage(@RequestParam(value = "message", defaultValue = "Conte me uma piada!") String message) {
+    public Generation sendMessage(@RequestParam(value = "message", defaultValue = "Conte me uma piada!") String message) {
         return chatService.sendMessage(message);
     }
 
