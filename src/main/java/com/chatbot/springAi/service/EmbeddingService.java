@@ -36,7 +36,8 @@ public class EmbeddingService {
 
         List<Document> documentList = new ArrayList<>();
         for (String part : parts) {
-            Document document = new Document(part);
+            if(part.trim().isEmpty()) continue;
+            Document document = new Document(part.trim());
             documentList.add(document);
         }
 

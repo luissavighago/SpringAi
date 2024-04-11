@@ -1,5 +1,6 @@
 package com.chatbot.springAi.controller;
 
+import com.chatbot.springAi.service.ChatService;
 import com.chatbot.springAi.service.EmbeddingService;
 import org.springframework.ai.chat.ChatResponse;
 import org.springframework.ai.chat.prompt.Prompt;
@@ -13,14 +14,14 @@ import org.springframework.web.bind.annotation.*;
 public class AssistantController {
 
     @Autowired
-    private OpenAiChatClient openAiChatClient;
+    private EmbeddingService embeddingService;
 
     @Autowired
-    private EmbeddingService embeddingService;
+    private ChatService chatService;
 
     @GetMapping("/chat")
     public ChatResponse sendMessage(@RequestParam(value = "message", defaultValue = "Conte me uma piada!") String message) {
-        return openAiChatClient.call(new Prompt(message));
+        return chatService.sendMessage(message);
     }
 
     @PostMapping("/file")
